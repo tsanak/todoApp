@@ -1,0 +1,82 @@
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>My todo app</title>
+    <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Roboto">
+    <link rel="stylesheet" href="main.css">
+</head>
+<body>
+    <div class="center-me" id="app">
+        <div id="container">
+            <h2 class="text-center">Best todo app</h2>
+            <h3 class="text-center">{{ totalTodos }} things to do</h3>
+            <div class="text-center">
+                <input type="text" placeholder="Go to the gym" v-model.trim="newTodo" @keyup.enter="addTodo">
+                <button @click="addTodo">Add todo</button>
+            </div>
+            <div id="todos">
+                <p class="text-center" v-if="noTodos">You don't have anything to do :(</p>
+                <ul id="todo-list" v-else>
+                        <todo-item
+                        v-for="(todo,index) in todos"
+                        v-bind:todo="todo"
+                        v-bind:key="index"
+                        v-on:delete="deleteTodo(index)">
+                        </todo-item>
+                </ul>
+            </div>
+        </div>
+    </div>
+</body>
+
+<script src="https://cdn.jsdelivr.net/npm/vue"></script>
+<script>
+    Vue.component('todo-item', {
+        props: ['todo'],
+        template: 
+            `<li>
+                <span>{{ todo.text }}</span> 
+                <span class="delete-todo" @click="$emit('delete')">X</span>
+            </li>`,
+    })
+    var app = new Vue({
+        el: '#app',
+        data: {
+            todos: [
+                { text: 'Learn JavaScript' },
+                { text: 'Learn Vue' },
+                { text: 'Build something awesome' },
+                { text: 'Go to London' },
+                { text: 'Kick ass' },
+                { text: 'Much fookin Profit' },
+                { text: 'Dickbutt' },
+                { text: 'Manemizjef' },
+                { text: 'etc' },
+            ],
+            newTodo: ''
+        },
+        computed: {
+            noTodos() {
+                return this.todos.length == 0;
+            },
+            totalTodos() {
+                return this.todos.length;
+            }
+        },
+        methods: {
+            deleteTodo(index) {
+                this.todos.splice(index, 1);
+            },
+            addTodo() {
+                if(this.newTodo == "") return;
+                this.todos.push({
+                    text: this.newTodo
+                });
+                this.newTodo = '';
+            }
+        }
+    });
+</script>
+</html>

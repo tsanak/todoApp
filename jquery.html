@@ -1,0 +1,106 @@
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>My todo app</title>
+    <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Roboto">
+    <link rel="stylesheet" href="main.css">
+</head>
+<body>
+    <div class="center-me">
+        <div id="container">
+            <h2 class="text-center">Best todo app</h2>
+            <h3 class="text-center"><span id="total-todos"></span> things to do</h3>
+            <div class="text-center">
+                <input type="text" id="newTodo" placeholder="Go to the gym">
+                <button id="addTodo">Add todo</button>
+            </div>
+            <div id="todos">
+                <p class="text-center" id="no-todos">You don't have anything to do :(</p>
+                <ul id="todo-list"></ul>
+            </div>
+        </div>
+    </div>
+</body>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.2.1/jquery.min.js"></script>
+<script>
+    var todos = [
+      { id:1, text: 'Learn JavaScript' },
+      { id:2, text: 'Learn Vue' },
+      { id:3, text: 'Build something awesome' },
+      { id:4, text: 'Go to London' },
+      { id:5, text: 'Kick ass' },
+      { id:6, text: 'Much fookin Profit' },
+      { id:7, text: 'Dickbutt' },
+      { id:8, text: 'Manemizjef' },
+      { id:9, text: 'etc' },
+    ];
+
+    function addTodosInDOM() {
+        for (var i = 0; i < todos.length; i++) {
+            var todo = todos[i];
+            $('#todo-list').append("<li todo-id='" + todo.id + "'><span>" + todo.text + "</span> <span class='delete-todo'>X</span></li>");
+        }
+        if(todos.length == 0) {
+            $('#no-todos').show();
+        }
+    }
+
+    function removeTodo(id) {
+        for (var i = 0; i < todos.length; i++) {
+            var todo = todos[i];
+            if(todo.id == id) {
+                todos.splice(i, 1);
+                break;
+            }
+        }
+    }
+
+    function addTodo() {
+        var newId = todos.length;
+            var todo = {
+                id: newId,
+                text: "",
+            }
+        //Get new todo text
+        var todoText = $('#newTodo').val();
+        if(todoText == "") return;
+        todo.text = todoText;
+        todos.push(todo);
+        //Update the dom
+        $('#no-todos').hide();    
+        $('#todo-list').append("<li todo-id='" + todo.id + "'><span>" + todo.text + "</span> <span class='delete-todo'>X</span></li>");
+        $('#newTodo').val("");
+        $('#total-todos').text(todos.length);
+    }
+
+    $(document).ready(function(){
+        addTodosInDOM();
+        $('#total-todos').text(todos.length);
+
+        $('body').on('click', '.delete-todo', function(e){
+            var target = e.target;
+            var li = $(target).parent();
+            var id = $(li).attr('todo-id');
+            //Remove element from dom
+            $(li).remove();
+            //Remove todo from the local data
+            removeTodo(id);
+            if(todos.length == 0) {
+                $('#no-todos').show();
+            }
+            //Update todo counter
+            $('#total-todos').text(todos.length);
+        });
+
+        $( "#newTodo" ).keyup(function(event) {
+            if(event.which == 13) addTodo();
+        });
+
+        $('#addTodo').click(function(){
+            addTodo();
+        });
+    });
+</script>
+</html>
